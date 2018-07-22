@@ -45,6 +45,10 @@ public class Elevator {
         System.out.println("Closing Door on floor" + currentFloor);
     }
 
+    public void isOccupied() {
+        //TODO: based off weight?
+    }
+
     public int getCurrentFloor() {
         return currentFloor;
     }
@@ -56,13 +60,20 @@ public class Elevator {
     public void addRequest(int newRequest) {
         if (requests.isEmpty()) {
             requests.add(newRequest);
+
+            if (newRequest > currentFloor) {
+                direction = Direction.UP;
+            } else if (newRequest < currentFloor) {
+                direction = Direction.DOWN;
+            }
+
         } else if (!requests.contains(newRequest)) {
             for (int i = 0; i < requests.size(); i++) {
                 switch (direction) {
                     case DOWN:
                         if (newRequest < currentFloor && newRequest > requests.get(i)) {
                             requests.add(i, newRequest);
-                        }
+                        } //TODO: add logic for edge cases
                         break;
                     case UP:
                         if (newRequest > currentFloor && newRequest < requests.get(i)) {
@@ -90,6 +101,10 @@ public class Elevator {
             TimeUnit.SECONDS.sleep(DOORS_OPEN_TIME);
             closeDoors();
             requests.remove(0);
+            if (requests.isEmpty()) {
+                direction = Direction.IDLE;
+            }
+            totalTrips++;
         }
     }
 
