@@ -8,7 +8,7 @@ public class Elevator {
     static public final int MAX_TRIPS = 100;
 
     int currentFloor = 0;
-    int direction = 0; //down -1, idle = 0, up = 1
+    Direction direction = Direction.IDLE;
     boolean maintenanceMode = false;
     int totalTrips = 0;
     int totalFloorsPassed = 0;
@@ -46,21 +46,25 @@ public class Elevator {
         return currentFloor;
     }
 
-    public int getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
     public void addRequest(int newRequest) {
         if (requests.isEmpty()) {
             requests.add(newRequest);
-        } else {
+        } else if (!requests.contains(newRequest)) {
             for (int i = 0; i < requests.size(); i++) {
-                if (direction > 0) {
-
-                } else if (direction < 0) {
-
-                } else if (direction == 0) {
-
+                switch (direction) {
+                    case DOWN:
+                        break;
+                    case UP:
+                        if (newRequest > currentFloor && newRequest < requests.get(i)) {
+                            requests.add(i, newRequest);
+                        } else if ()
+                        break;
+                    default:
+                        throw new RuntimeException("Unsupported direction: " + direction);
                 }
             }
         }
