@@ -45,6 +45,7 @@ public class Elevator {
     }
 
     public void addRequest(int request) {
+        if(currentFloor )
         requests.add(request);
     }
 
