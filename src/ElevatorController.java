@@ -4,7 +4,6 @@ import java.util.List;
 public class ElevatorController {
     int minFloor = 1;
     int maxFloor;
-    int totalFloors;
     List<Elevator> elevators;
 
     public ElevatorController(int maxFloor, int totalElevators) {
@@ -15,7 +14,16 @@ public class ElevatorController {
         }
     }
 
-    public void requestFloor(int floor) {
-        System.out.println(floor +" floor requested");
+    public void requestFloor(int toFloor, int fromFloor) {
+        if (toFloor > maxFloor || toFloor < minFloor) {
+            throw new IndexOutOfBoundsException("Unable to request floor " + toFloor);
+        }
+        System.out.println(toFloor +" floor requested");
+        for (Elevator elevator : elevators) {
+            if (elevator.getCurrentFloor() == toFloor) {
+                elevator.addRequest(toFloor);
+            }
+        }
+
     }
 }

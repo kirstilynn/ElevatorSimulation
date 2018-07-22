@@ -2,10 +2,12 @@ import com.sun.tools.javac.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Elevator {
 
     static public final int MAX_TRIPS = 100;
+    static public final int DOORS_OPEN_TIME = 10;
 
     int currentFloor = 0;
     Direction direction = Direction.IDLE;
@@ -18,8 +20,9 @@ public class Elevator {
 
     }
 
-    public void move() {
-        //TODO: move up or down based on next request, or stay idle?
+    public void move() throws InterruptedException {
+        checkCurrentRequest();
+        //TODO: move up or down based on next request, or stay idle
     }
 
     public void moveUp() {
@@ -57,14 +60,17 @@ public class Elevator {
             for (int i = 0; i < requests.size(); i++) {
                 switch (direction) {
                     case DOWN:
+                        if (newRequest < currentFloor && newRequest > requests.get(i)) {
+                            requests.add(i, newRequest);
+                        }
                         break;
                     case UP:
                         if (newRequest > currentFloor && newRequest < requests.get(i)) {
                             requests.add(i, newRequest);
-                        } else if ()
+                        } //TODO: add logic for edge cases
                         break;
                     default:
-                        throw new RuntimeException("Unsupported direction: " + direction);
+                        throw new UnsupportedOperationException("Unsupported direction: " + direction);
                 }
             }
         }
@@ -76,6 +82,15 @@ public class Elevator {
 
     public void service() {
         maintenanceMode = false;
+    }
+
+    private void checkCurrentRequest() throws InterruptedException {
+        if(!requests.isEmpty() && requests.get(0).equals(currentFloor)) {
+            openDoors();
+            TimeUnit.SECONDS.sleep(DOORS_OPEN_TIME);
+            closeDoors();
+            requests.remove(0);
+        }
     }
 
     private void checkMaintenance() {
